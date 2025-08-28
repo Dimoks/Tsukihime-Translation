@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import enum
 import os
 import re
@@ -94,13 +95,6 @@ def process_script_file(audio_timing, scene_name_map,
             else ScriptCommand(groups[0], groups[1].split(','))
         )
 
-    # Perform our transforms on the script
-    # - Take all @k@e -> @x pairs, and convert to a _ZM + _WTTM + _MSAD
-    script_commands = process_script(
-        audio_timing,
-        script_commands
-    )
-
     # Is this a QA scene?
     # If it is, we want to excise _all_ newline triggers in _ZM calls
     is_qa = scene_name.startswith('QA_')
@@ -108,10 +102,17 @@ def process_script_file(audio_timing, scene_name_map,
         new_cmds = []
         for cmd in script_commands:
             if cmd.opcode.startswith('ZM'):
-                print(cmd)
-                cmd.arguments[0] = cmd.arguments[0].replace('^@n', '@n')
+                # print(cmd)
+                cmd.arguments[0] = cmd.arguments[0].replace('^', '')
             new_cmds.append(cmd)
         script_commands = new_cmds
+
+    # Perform our transforms on the script
+    # - Take all @k@e -> @x pairs, and convert to a _ZM + _WTTM + _MSAD
+    script_commands = process_script(
+        audio_timing,
+        script_commands
+    )
 
     # Serialize it back out over the input file
     with open(output_filename, 'w') as f:
@@ -206,24 +207,18 @@ def patch_ke_x_block(timing_db, script_commands):
         if found_vplys:
             last_block_vply_len = timing_db[found_vplys[-1].arguments[0]]
 
-        # Delete any WKAD(F823)
-        block = [
-            c for c in block
-            if not (c.opcode == 'WKAD' and c.arguments[0] == 'F823')
-        ]
-
         # Are we now over/under the target length for this block
-        len_delta = block_len - len(block)
+        len_delta = len(block) - block_len
         # print(f"Len delta: {len_delta}")
         # print([str(c) for c in block])
 
-        # If the block is too _long_, we can't really do anything
-        # to fix it?
-        assert len_delta >= 0, "Block too long"
-
-        # If the block is too short, insert some 1ms WTTM to pad
-        for _ in range(len_delta):
-            block.insert(1, ScriptCommand("WTTM", ["1", "1"]))
+        # If the block is too _long_
+        if len_delta > 0:
+            # Delete any WKAD(F823)
+            block = [
+                c for c in block
+                if not (c.opcode == 'WKAD' and c.arguments[0] == 'F823')
+            ]
 
         return block
 
@@ -273,19 +268,6 @@ def process_script(timing_db, script_commands):
             is_txt_cmd = cmd_is_zm or cmd_is_msad
             cmd_is_ke = is_txt_cmd and cmd.arguments[0].endswith('@k@e')
             cmd_is_x = is_txt_cmd and cmd.arguments[0].startswith('@x')
-
-            # Is this a compound ZM (QA section)
-            if cmd_is_zm:
-                split_args = cmd.arguments[0].split('^')
-                if len(split_args) > 1 and all([c[0] == '$' for c in split_args]):
-                    # Replace this ZM with a ZM + MSADs
-                    head.append(ScriptCommand(
-                        cmd.opcode, [split_args[0]+"@n"]))
-                    if len(split_args) > 2:
-                        for c in split_args[1:-1]:
-                            head.append(ScriptCommand('MSAD', [c+"@n"]))
-                    head.append(ScriptCommand('MSAD', [split_args[-1]]))
-                    continue
 
             # If the commands is not a zm, just move it to the head list
             # and continue iterating
@@ -354,8 +336,8 @@ def process_script(timing_db, script_commands):
                 seek_buf.insert(0, cmd)
                 continue
 
-            # If it is WKAD and _right_ flag, force the argument to zero
-            cmd.arguments[1] = '0'
+            # If it is WKAD and _right_ flag, dummy command
+            cmd.opcode = 'DMMY'
 
             # Flush seek buffer and return to SEEK
             head.append(cmd)
@@ -454,6 +436,41 @@ def process_script(timing_db, script_commands):
             for c in processed_block:
                 head.append(c)
 
+            commands_to_patch = []
+
+            while head:
+                prev_cmd = head.pop(-1)
+
+                # If it's a different text line or we hit a pagebreak, bail out
+                cmd_is_pgst = prev_cmd.opcode == 'PGST'
+                cmd_is_zm = prev_cmd.opcode.startswith('ZM')
+                if cmd_is_pgst or cmd_is_zm:
+                    commands_to_patch.insert(0, prev_cmd)
+                    for c in commands_to_patch:
+                        head.append(c)
+                    break
+
+                # Process the commands in the block
+                if (prev_cmd.opcode == 'WKAD' and prev_cmd.arguments[0] == 'F823'
+                    or prev_cmd.opcode == 'WNTY'):
+
+                    # Special case for _WNTY(1)
+                    if prev_cmd.opcode == 'WNTY' and prev_cmd.arguments[0] == '1':
+
+                        # Search for a preceding _WNTY(0) to change
+                        for i in range(len(head) - 1, -1, -1):
+                            wnty_cmd  = head[i]
+                            if (wnty_cmd.opcode == 'WNTY' and
+                                wnty_cmd.arguments[0] == '0' and
+                                head[i+1].opcode.startswith('ZM')):
+                                print("Changing preceding _WNTY(0) to _WNTY(1)")
+                                wnty_cmd .arguments[0] = '1'
+                                break
+
+                    prev_cmd.opcode = 'DMMY'
+
+                commands_to_patch.insert(0, prev_cmd)
+
             # Move back to ADVANCE
             state = PState.ADVANCE
             continue
@@ -470,7 +487,7 @@ def load_nam_file(filename):
 
     entries = [data[i:i+32] for i in range(0, len(data), 32)]
 
-    print(entries)
+    # print(entries)
 
     return {
         i + 3: ''.join([chr(c) for c in entries[i] if c != 0]).strip()
