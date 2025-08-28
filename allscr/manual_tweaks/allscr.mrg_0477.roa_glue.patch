@@ -9,7 +9,7 @@ diff --git a/allscr/retimed/allscr.mrg_0477.txt b/allscr/retimed/allscr.mrg_0477
 +_ZMac61a($039682@k@e@n);
  _VPLY(B10_14_01B_0022_2,03304);
 -_WKAD(F823,1);
-+_WKAD(F823,0);
++_DMMY(F823,1);
  _WKST(C847,eq,0);
  _WKST(C859,eq,0);
  _WNTY(0);
@@ -24,7 +24,7 @@ diff --git a/allscr/retimed/allscr.mrg_0477.txt b/allscr/retimed/allscr.mrg_0477
 +_ZMac61c($039684@k@e@n);
  _VPLY(B10_14_01B_0022_4,03306);
 -_WKAD(F823,1);
-+_WKAD(F823,0);
++_DMMY(F823,1);
  _WKST(C847,eq,0);
  _WKST(C859,eq,0);
  _WNTY(0);
@@ -41,7 +41,7 @@ diff --git a/allscr/retimed/allscr.mrg_0477.txt b/allscr/retimed/allscr.mrg_0477
 +_ZMac626($039694@k@e@n);
  _VPLY(B10_14_01B_0023_2,0330a);
 -_WKAD(F823,1);
-+_WKAD(F823,0);
++_DMMY(F823,1);
  _WKST(C847,eq,0);
  _WKST(C859,eq,0);
  _WNTY(0);
@@ -51,16 +51,18 @@ diff --git a/allscr/retimed/allscr.mrg_0477.txt b/allscr/retimed/allscr.mrg_0477
  _WKAD(F823,1);
  _WKST(C847,eq,0);
  _WKST(C859,eq,0);
- _WNTY(0);
+-_WNTY(0);
 -_ZMac628($039696@k@e);
++_WNTY(1);
 +_ZMac628($039696@k@e@n);
  _VPLY(B10_14_01B_0023_4,0330c);
 -_WKAD(F823,1);
-+_WKAD(F823,0);
++_DMMY(F823,1);
  _WKST(C847,eq,0);
  _WKST(C859,eq,0);
- _WNTY(1);
+-_WNTY(1);
 -_ZMac629($039697);
++_DMMY(1);
 +_MSAD($039697);
  _WKST(F823,eq,0);
  _WKST(F847,eq,0);
@@ -73,7 +75,7 @@ diff --git a/allscr/retimed/allscr.mrg_0477.txt b/allscr/retimed/allscr.mrg_0477
 +_ZMaca4e($039775@k@e@n);
  _VPLY(B10_14_01B_0032_1,0331b);
 -_WKAD(F823,1);
-+_WKAD(F823,0);
++_DMMY(F823,1);
  _WKST(C847,eq,0);
  _WKST(C859,eq,0);
  _WNTY(0);
@@ -88,7 +90,7 @@ diff --git a/allscr/retimed/allscr.mrg_0477.txt b/allscr/retimed/allscr.mrg_0477
 +_ZMaca50($039777@k@e@n);
  _VPLY(B10_14_01B_0032_3,0331d);
 -_WKAD(F823,1);
-+_WKAD(F823,0);
++_DMMY(F823,1);
  _WKST(C847,eq,0);
  _WKST(C859,eq,0);
  _WNTY(0);

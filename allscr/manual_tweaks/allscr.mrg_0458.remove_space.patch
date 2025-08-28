@@ -6,7 +6,7 @@ diff --git a/allscr/retimed/allscr.mrg_0458.txt b/allscr/retimed/allscr.mrg_0458
  _WKST(F1104,eq,1);
  _WTTM(100,1);
 -_WKAD(C847,1);
-+_WKAD(C847,0);
++_DMMY(C847,1);
  _STCH(29,img0597,240,136,1000,255,6570,,CC,,,);
  _FANX(1,0,0);
  _STMA(11,15313);
