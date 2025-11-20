@@ -18,7 +18,7 @@ class SysmesString:
         self._is_flowchart_descr = is_flowchart_descr
 
     def __repr__(self):
-        return f"SysmesString({self._text})"
+        return "SysmesString(%s)" % self._text
 
     def raw_text(self):
         return self._text
@@ -33,7 +33,7 @@ class SysmesString:
         # If this is a flowchart title, just assert that it's not too long
         if self._is_flowchart_title:
             assert self.unicode_aware_len(self._text) <= self.FLOWCHART_WIDTH, \
-                f"Title too long: {self._text}"
+                "Title too long: %s" % self._text
             return self._text
 
         # If this is a flowchart descr, run a full linebreak process
@@ -143,15 +143,15 @@ def rebuild_sysmes(old_sysmes_path, translation_path, new_sysmes_path):
     # Read fixed size header
     langs, string_count = struct.unpack("<II", old_data[0:8])
 
-    print(f"Number of languages: {langs}")
-    print(f"Total string count: {string_count}")
+    print("Number of languages: %d" % langs)
+    print("Total string count: %d" % string_count)
 
     lang_idx = 0 if langs == 1 else 1
 
     for i in range(langs):
         (offset), = struct.unpack("<Q", old_data[16+8*langs+8*i*string_count:
                                                  16+8*langs+8*i*string_count+8])
-        print(f"Language {i} data start offset: {offset}")
+        print("Language %d data start offset: %d" % (i, offset))
 
     # Parse off all the string offsets
     lang = [[]*i for i in range(langs)]
@@ -179,7 +179,7 @@ def rebuild_sysmes(old_sysmes_path, translation_path, new_sysmes_path):
     for en in lang[lang_idx][1]:
         sha = hashlib.sha1(en.encode('utf-8')).hexdigest()
         if sha not in translations_by_sha:
-            raise Exception(f"Failed to find translation for sha {sha}: '{en}'")
+            raise Exception("Failed to find translation for sha %s: '%s'" % (sha, en))
         en_text = translations_by_sha[sha].formatted_text()
         en_strings.append(en_text)
 
@@ -236,7 +236,7 @@ def lint_sysmes(translation_path):
     for sha, string in translations_by_sha.items():
         if string.is_flowchart_title():
             if len(string.raw_text()) > SysmesString.FLOWCHART_WIDTH:
-                print(f"Flowchart title too long: '{string.raw_text()}'")
+                print("Flowchart title too long: '%s'" % string.raw_text())
                 lint_ok = False
 
     if not lint_ok:

@@ -1,6 +1,18 @@
 import os
+import sys
 import argparse
 import pathlib
+
+if getattr(sys, 'frozen', False):
+    # If run as .exe
+    exe_dir = os.path.dirname(sys.executable)
+else:
+    # If run as Python script
+    exe_dir = os.path.dirname(os.path.abspath(__file__))
+
+if exe_dir not in sys.path:
+    sys.path.insert(0, exe_dir)
+
 import bntx as BNTX
 
 

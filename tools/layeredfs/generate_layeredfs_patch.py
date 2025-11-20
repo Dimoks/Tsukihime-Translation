@@ -77,7 +77,7 @@ def find_hactool():
         for path in path_hints:
             hactool_bin = shutil.which(name, path=path)
             if hactool_bin:
-                print(f"Found hactool: {hactool_bin}")
+                print("Found hactool: %s" % hactool_bin)
                 return hactool_bin
 
     # Not found - complain
@@ -106,7 +106,7 @@ def find_keys():
         for basepath in candidate_basepath_names:
             keyfile = os.path.join(basepath, filename)
             if os.path.exists(keyfile):
-                print(f"Guessing switch keys are in {keyfile}")
+                print("Guessing switch keys are in %s" % keyfile)
                 return keyfile
 
     # Not found - complain
@@ -140,7 +140,7 @@ def find_base_nsp():
     for candidate in candidates:
         stats = os.stat(candidate)
         if stats.st_size > 20 * 1024 * 1024 * 1024:
-            print(f"Guessing base NSP is {candidate}")
+            print("Guessing base NSP is %s" % candidate)
             return candidate
 
     # Not found - complain
@@ -157,7 +157,7 @@ def find_patch_nsp():
     for candidate in candidates:
         stats = os.stat(candidate)
         if stats.st_size < 5 * 1024 * 1024 * 1024:
-            print(f"Guessing patch NSP is {candidate}")
+            print("Guessing patch NSP is %s" % candidate)
             return candidate
 
     # Not found - complain
@@ -175,7 +175,7 @@ def generate_layeredfs(args):
         args.hactool_bin,
         '-k', args.keyfile,
         '--intype=pfs0',
-        f'--pfs0dir={base_pfs_tmpdir}',
+        '--pfs0dir=%s' % base_pfs_tmpdir,
         args.base_nsp_path
     ]
     subprocess.run(base_extract_args, check=True)
@@ -186,7 +186,7 @@ def generate_layeredfs(args):
         args.hactool_bin,
         '-k', args.keyfile,
         '--intype=pfs0',
-        f'--pfs0dir={patch_pfs_tmpdir}',
+        '--pfs0dir=%s' % patch_pfs_tmpdir,
         args.patch_nsp_path
     ]
     subprocess.run(patch_extract_args, check=True)
@@ -205,8 +205,8 @@ def generate_layeredfs(args):
         return largest
     base_romfs_nca = find_biggest_nca(base_pfs_tmpdir)
     patch_romfs_nca = find_biggest_nca(patch_pfs_tmpdir)
-    print("Base ROMFS NCA:  {base_romfs_nca}")
-    print("Patch ROMFS NCA: {patch_romfs_nca}")
+    print("Base ROMFS NCA:  %s" % base_romfs_nca)
+    print("Patch ROMFS NCA: %s" % patch_romfs_nca)
 
     # Make sure the output dir exists
     patch_romfs_out = 'atmosphere/contents/01001DC01486A000/romfs'
@@ -221,8 +221,8 @@ def generate_layeredfs(args):
         '-k', args.keyfile,
         '-x', patch_romfs_nca,
         '--onlyupdated',
-        f'--section1dir={patch_romfs_out}',
-        f'--basenca={base_romfs_nca}'
+        '--section1dir=%s' % patch_romfs_out,
+        '--basenca=%s' % base_romfs_nca
     ]
     subprocess.run(romfs_extract_args, check=True)
 

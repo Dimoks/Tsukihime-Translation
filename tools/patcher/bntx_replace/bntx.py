@@ -23,6 +23,7 @@
 import os.path
 
 import dds
+import bcn
 import globals
 
 from structs import (
@@ -36,7 +37,6 @@ try:
 
 except:
     import swizzle
-
 
 DIV_ROUND_UP = swizzle.DIV_ROUND_UP
 round_up = swizzle.round_up

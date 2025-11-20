@@ -65,7 +65,6 @@ def main():
     # 1 offset to make /both/ start and end inclusive
     start_i = int(sys.argv[3]) - 1
     end_i = int(sys.argv[4])
-        
 
     with open(filename, encoding="utf-8") as f:
         file = f.readlines()
@@ -77,7 +76,7 @@ def main():
             modified_file
         ))
 
-        print(f"successfully wrote to {result_filename}")
+        print("successfully wrote to %s" % result_filename)
 
         with open(result_filename, "w", encoding="utf-8") as res:
             res.writelines(file[:start_i])

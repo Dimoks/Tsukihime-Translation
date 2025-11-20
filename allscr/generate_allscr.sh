@@ -21,7 +21,7 @@ for F in $(ls patched/); do
   # Remove newlines
   cat "patched/$F" | tr -d '\n' > "build/$F"
   # Compress
-  mzx_compress "build/$F" build/"`echo $F | sed 's/txt/bin/'`" &
+  mzx_compress "build/$F" build/"`echo $F | sed 's/txt/bin/'`" 2 1 &
 done
 wait
 echo "Finished compressing script files       "

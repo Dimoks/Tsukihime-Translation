@@ -77,17 +77,29 @@ class BNTXHeader:
 
     def __repr__(self):
         return (
-            f"Format: {self.format}\n"
-            f"Magic: {self.magic}\n"
-            f"Version: {self.version}\n"
-            f"Bom: {self.bom}\n"
-            f"Alignment Shift: {self.alignmentShift}\n"
-            f"TargetAddrSize: {self.fileNameAddr}\n"
-            f"FileNameAddr: {self.fileNameAddr}\n"
-            f"Flag: {self.flag}\n"
-            f"FirstBlkAddr: {self.firstBlkAddr}\n"
-            f"RelocAddr: {self.relocAddr}\n"
-            f"FileSize: {self.fileSize}\n"
+            "Format: %s\n"
+            "Magic: %s\n"
+            "Version: %d\n"
+            "Bom: 0x%04x\n"
+            "Alignment Shift: %d\n"
+            "TargetAddrSize: %d\n"
+            "FileNameAddr: %d\n"
+            "Flag: %d\n"
+            "FirstBlkAddr: %d\n"
+            "RelocAddr: %d\n"
+            "FileSize: %d\n"
+        ) % (
+            self.format,
+            self.magic,
+            self.version,
+            self.bom,
+            self.alignmentShift,
+            self.targetAddrSize,
+            self.fileNameAddr,
+            self.flag,
+            self.firstBlkAddr,
+            self.relocAddr,
+            self.fileSize
         )
 
 
@@ -147,10 +159,15 @@ class BlockHeader:
 
     def __repr__(self):
         return (
-            f"Format: {self.format}\n"
-            f"Magic: {self.magic}\n"
-            f"Next block addr: {self.nextBlkAddr}\n"
-            f"Block size: {self.blockSize}\n"
+            "Format: %s\n"
+            "Magic: %s\n"
+            "Next block addr: %d\n"
+            "Block size: %d\n"
+        ) % (
+            self.format,
+            self.magic,
+            self.nextBlkAddr,
+            self.blockSize
         )
 
 
@@ -363,33 +380,61 @@ class TextureInfo:
 
     def __repr__(self):
         return (
-            f"Flags: {self.flags}\n"
-            f"Dim: {self.dim}\n"
-            f"Tile Mode: {self.tileMode}\n"
-            f"Swizzle: {self.swizzle}\n"
-            f"Num mips: {self.numMips}\n"
-            f"Num samples: {self.numSamples}\n"
-            f"Format: {self.format_}\n"
-            f"AccessFlags: {self.accessFlags}\n"
-            f"Width: {self.width}\n"
-            f"Height: {self.height}\n"
-            f"Depth: {self.depth}\n"
-            f"Array Length: {self.arrayLength}\n"
-            f"Texture Layout: {self.textureLayout}\n"
-            f"Texture Layout2: {self.textureLayout2}\n"
-            f"Image Size: {self.imageSize}\n"
-            f"Alignment: {self.alignment}\n"
-            f"Comp Sel: {self._compSel}\n"
-            f"Img Dim: {self.imgDim}\n"
-            f"Name Adr: {self.nameAddr}\n"
-            f"Name: {self.name}\n"
-            f"Parent Adr: {self.parentAddr}\n"
-            f"Ptrs Adr: {self.ptrsAddr}\n"
-            f"User Data Addr: {self.userDataAddr}\n"
-            f"Tex Ptr: {self.texPtr}\n"
-            f"TexViewPtr: {self.texViewPtr}\n"
-            f"DescSlotDataAddr: {self.descSlotDataAddr}\n"
-            f"UsrDictAddr: {self.userDictAddr}\n"
+            "Flags: %d\n"
+            "Dim: %d\n"
+            "Tile Mode: %d\n"
+            "Swizzle: %d\n"
+            "Num mips: %d\n"
+            "Num samples: %d\n"
+            "Format: 0x%04x\n"
+            "AccessFlags: 0x%02x\n"
+            "Width: %d\n"
+            "Height: %d\n"
+            "Depth: %d\n"
+            "Array Length: %d\n"
+            "Texture Layout: %d\n"
+            "Texture Layout2: %d\n"
+            "Image Size: %d\n"
+            "Alignment: %d\n"
+            "Comp Sel: 0x%08x\n"
+            "Img Dim: %d\n"
+            "Name Adr: %d\n"
+            "Name: %s\n"
+            "Parent Adr: %d\n"
+            "Ptrs Adr: %d\n"
+            "User Data Addr: %d\n"
+            "Tex Ptr: %d\n"
+            "TexViewPtr: %d\n"
+            "DescSlotDataAddr: %d\n"
+            "UsrDictAddr: %d\n"
+        ) % (
+            self.flags,
+            self.dim,
+            self.tileMode,
+            self.swizzle,
+            self.numMips,
+            self.numSamples,
+            self.format_,
+            self.accessFlags,
+            self.width,
+            self.height,
+            self.depth,
+            self.arrayLength,
+            self.textureLayout,
+            self.textureLayout2,
+            self.imageSize,
+            self.alignment,
+            self._compSel,
+            self.imgDim,
+            self.nameAddr,
+            self.name,
+            self.parentAddr,
+            self.ptrsAddr,
+            self.userDataAddr,
+            self.texPtr,
+            self.texViewPtr,
+            self.descSlotDataAddr,
+            self.userDictAddr
         )
 
     def setNameIndex(self, strTbl):
@@ -400,6 +445,7 @@ class TextureInfo:
 
         if not self.readTexLayout:
             textureLayout = 0
+
         else:
             textureLayout = self.sparseResidency << 5 | self.sparseBinding << 4 | self.blockHeightLog2
 

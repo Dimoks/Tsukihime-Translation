@@ -59,14 +59,15 @@ def process_script_file(audio_timing, scene_name_map,
     print(script_filename)
 
     # Work out what mrg entry this is / what the scene names is
-    match = re.search(r".*/allscr.mrg_(\d+).txt", script_filename)
+    sep = re.escape(os.path.sep)
+    match = re.search(r".*" + sep + r"allscr.mrg_(\d+).txt", script_filename)
     scene_idx = int(match.group(1))
     scene_name = scene_name_map[scene_idx]
     print(scene_name)
 
     # Load in the raw script
     file_data_raw = None
-    with open(script_filename, "r") as f:
+    with open(script_filename, "r", encoding='utf-8') as f:
         file_data_raw = f.read()
 
     # Split into commands on semicolon and discard any empty lines
@@ -115,7 +116,7 @@ def process_script_file(audio_timing, scene_name_map,
     )
 
     # Serialize it back out over the input file
-    with open(output_filename, 'w') as f:
+    with open(output_filename, 'w', encoding='utf-8', newline='\n') as f:
         for cmd in script_commands:
             f.write(str(cmd) + "\n")
 

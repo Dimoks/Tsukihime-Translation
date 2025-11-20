@@ -44,7 +44,7 @@ class ReadableExporter:
                 self.entries = []
 
             def __repr__(self):
-                return f"EntryGroup({self.entries})"
+                return "EntryGroup(%s)" % self.entries
 
             def add_entry(self, entry):
                 self.entries.append(entry)
@@ -72,9 +72,10 @@ class ReadableExporter:
 
             def __repr__(self):
                 return (
-                    f"Diff.Entry(filename='{self.filename}', "
-                    f"line={self.line}, en_text='{self.en_text}', "
-                    f"comment='{self.comment}')"
+                    "Diff.Entry(filename='%s', line=%d, en_text='%s', "
+                    "comment='%s')" % (
+                        self.filename, self.line, self.en_text, self.comment
+                    )
                 )
 
         def __init__(self):
@@ -85,9 +86,9 @@ class ReadableExporter:
         def __repr__(self):
             ret = "Diff("
             for sha, entries in self.entries_by_sha.items():
-                ret += f"sha:{sha}: {entries}, "
+                ret += "sha:%s: %s" % (sha, entries)
             for offset, entries in self.entries_by_offset.items():
-                ret += f"offset:{offset}: {entries}, "
+                ret += "offset: %d: %s, " % (offset, entries)
             ret += ")"
             return ret
 
@@ -167,8 +168,10 @@ class ReadableExporter:
                     continue
 
                 raise cls.ParseError(
-                    f"Unexpected token '{c}' on "
-                    f"line {line_counter} while in state EXPECT_BLOCK"
+                    "Unexpected token '%s' on "
+                    "line %d while in state EXPECT_BLOCK" % (
+                        c, line_counter
+                    )
                 )
 
             # Accumulate the sha: or offset: prefix on the block
@@ -185,7 +188,7 @@ class ReadableExporter:
                         active_block_is_offset_override = True
                     else:
                         raise cls.ParseError(
-                            f"Invalid block prefix tag '{cmd_acc}'"
+                            "Invalid block prefix tag '%s'" % cmd_acc
                         )
 
                     state = cls.LexState.PARSE_BLOCK_ID
@@ -214,15 +217,19 @@ class ReadableExporter:
                     # Offsets must be pure numeric
                     if c not in '0123456789':
                         raise cls.ParseError(
-                            f"Invalid character '{c}' in "
-                            f"offset on line {line_counter}"
+                            "Invalid character '%s' in "
+                            "offset on line %d" % (
+                                c, line_counter
+                            )
                         )
                 if not active_block_is_offset_override:
                     # All content hashes must be valid lowercase hex
                     if c not in '0123456789abcdef':
                         raise cls.ParseError(
-                            f"Invalid character '{c}' in "
-                            f"content hash on line {line_counter}"
+                            "Invalid character '%s' in "
+                            "content hash on line %d" % (
+                                c, line_counter
+                            )
                         )
 
                 # Accumulate the character onto the cmd_acc buffer
@@ -245,7 +252,7 @@ class ReadableExporter:
 
                 raise cls.ParseError(
                     "Expected open-block after block-specifier "
-                    f"but found '{c}' on line {line_counter}"
+                    "but found '%s' on line %d" % (c, line_counter)
                 )
 
             # Consume until we hit a close-block '}'. Accumulate lines into
@@ -372,6 +379,6 @@ class ReadableExporter:
         # a parse error
         if state == cls.LexState.DEFAULT_BLOCK:
             raise cls.ParseError(
-                f"Unterminated line block on {filename}:{block_start_line}")
+                "Unterminated line block on %s:%d" % (filename, block_start_line))
 
         return ret

@@ -8,8 +8,8 @@ Open source translation of Tsukihime -A Piece of Blue Glass Moon- prepared by [T
 * Documentation is available [here](https://sites.google.com/view/tsukihimates/home).
 
 ### Tools
-* [deepLuna](https://github.com/Hakanaou/deepLuna) (extraction/injection tool. No relation to DeepL)
-* [Mangetsu 満月](https://github.com/rschlaikjer/mangetsu) (Archive Manager)
+* [deepLuna](https://github.com/Dimoks/deepLuna) (fork of [extraction/injection tool](https://github.com/Hakanaou/deepLuna). No relation to DeepL)
+* [Mangetsu 満月](https://github.com/Dimoks/mangetsu) (fork of [Archive Manager](https://github.com/rschlaikjer/mangetsu))
 * [PS HuneX Tools](https://github.com/Hintay/PS-HuneX_Tools/) (Archive Manager)
 * [QuickBMS](http://aluigi.altervista.org/quickbms.htm) (Archive Manager)
 * [Switch Toolbox](https://github.com/KillzXGaming/Switch-Toolbox) (Archive Manager)

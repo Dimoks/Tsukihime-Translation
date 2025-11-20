@@ -41,7 +41,7 @@ mv ./decompressed/allscr.mrg_0002.bin ./raw
 for MZX in ./decompressed/*.bin; do
 	# Decompress the mzx files
   echo -ne "Decompressing $MZX\r"
-  mzx_decompress "$MZX" "${MZX%.bin}.txt"
+  mzx_decompress "$MZX" "${MZX%.bin}.txt" 1
 
 	# Replace the ";" by ";\n"
 	sed -i -e 's/;/;\n/g' "${MZX%.bin}.txt"
